@@ -1,0 +1,16 @@
+.inputRoot {
+   & .searchReposInput {
+      max-width: 912px;
+      //height: 42px;
+      background: rgba(242, 242, 242, 1);
+      color: white;
+   }
+
+   & .MuiInputLabel-root {
+      transform: none; // Убираем смещение лейбла
+   }
+
+   & .MuiInputBase-input {
+      padding: 9px 16px;
+   }
+}
