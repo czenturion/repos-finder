@@ -3,7 +3,7 @@ import { getRepositoryDetails, searchRepositories } from '../services/github'
 import axios from 'axios'
 
 // Типы данных
-interface Repository {
+export interface Repository {
   id: number
   name: string
   language: string
@@ -20,6 +20,7 @@ interface RepositoryDetails {
 
 interface RepoState {
   repos: Repository[]
+  totalCount: number
   details: RepositoryDetails | null
   loading: boolean
   error: string | null
@@ -28,18 +29,19 @@ interface RepoState {
 // Начальное состояние
 const initialState: RepoState = {
   repos: [],
+  totalCount: 0,
   details: null,
   loading: false,
-  error: null,
+  error: null
 }
 
 // Асинхронные операции
 export const fetchRepositories = createAsyncThunk(
   'repos/fetchRepositories',
-  async (query: string, { rejectWithValue }) => {
+  async ({ query, page }: { query: string, page: number }, { rejectWithValue }) => {
     try {
-      const data = await searchRepositories(query)
-      return data.items
+      const data = await searchRepositories(query, page)
+      return data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data?.message || error.message)
@@ -78,7 +80,8 @@ const repoSlice = createSlice({
       })
       .addCase(fetchRepositories.fulfilled, (state, action) => {
         state.loading = false
-        state.repos = action.payload
+        state.repos = action.payload.items
+        state.totalCount = action.payload.total_count
       })
       .addCase(fetchRepositories.rejected, (state, action) => {
         state.loading = false
@@ -96,7 +99,7 @@ const repoSlice = createSlice({
         state.loading = false
         state.error = action.payload as string
       })
-  },
+  }
 })
 
 export default repoSlice.reducer

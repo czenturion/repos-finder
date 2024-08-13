@@ -1,4 +1,64 @@
-.searchReposInputContainer {
-  padding: 19px 42px;
-  background-color: rgba(0, 131, 143, 1);
+.homePageContainer {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+
+  .searchReposInputContainer {
+    padding: 19px 42px;
+    background-color: rgba(0, 131, 143, 1);
+    display: flex;
+    gap: 8px;
+  }
+
+  .findBtn {
+    background: rgba(33, 150, 243, 1);
+  }
+
+  .resultsContainer {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: space-between;
+    padding-left: 42px;
+    height: 100%;
+
+
+    .tableContainer {
+      height: 100%;
+      flex: 2;
+      margin-right: 16px;
+
+      .resultTitle {
+        font-weight: 400;
+        font-size: 48px;
+        line-height: 56px;
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+    }
+
+    .detailsContainer {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      background: rgba(242, 242, 242, 1);
+
+      .detailsHint {
+        font-weight: 400;
+        font-size: 14px;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  .welcomeMsg {
+    padding-top: 399px;
+
+    h4 {
+      font-weight: 400;
+      font-size: 46px;
+      color: rgba(79, 79, 79, 1);
+    }
+  }
 }

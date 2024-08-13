@@ -1,0 +1,9 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .headTitle {
+    font-weight: 500;
+  }
+}
