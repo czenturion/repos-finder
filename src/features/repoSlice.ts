@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getRepositoryDetails, searchRepositories } from '../services/github'
-import axios from 'axios'
+import { searchRepositories } from '../services/github'
 
 // Типы данных
 export interface Repository {
@@ -10,6 +9,13 @@ export interface Repository {
   forks: number
   stargazers_count: number
   updated_at: string
+  topics: string[]
+  description: string
+  license: License
+}
+
+type License = {
+  name: string
 }
 
 interface RepositoryDetails {
@@ -26,6 +32,8 @@ interface RepoState {
   error: string | null
 }
 
+type fetchRepositoriesPropsT = { query: string, page: number, rowsPerPage: number, sort: string }
+
 // Начальное состояние
 const initialState: RepoState = {
   repos: [],
@@ -38,13 +46,13 @@ const initialState: RepoState = {
 // Асинхронные операции
 export const fetchRepositories = createAsyncThunk(
   'repos/fetchRepositories',
-  async ({ query, page }: { query: string, page: number }, { rejectWithValue }) => {
+  async ({ query, page, rowsPerPage, sort }: fetchRepositoriesPropsT, { rejectWithValue }) => {
     try {
-      const data = await searchRepositories(query, page)
+      const data = await searchRepositories(query, page, rowsPerPage, sort)
       return data
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message || error.message)
+    } catch (error: any) {
+      if (error.status) {
+        return rejectWithValue(error.message)
       } else {
         return rejectWithValue("An unknown error occurred")
       }
@@ -52,20 +60,6 @@ export const fetchRepositories = createAsyncThunk(
   }
 )
 
-export const fetchRepositoryDetails = createAsyncThunk(
-  'repos/fetchRepositoryDetails',
-  async ({ owner, repo }: { owner: string; repo: string }, { rejectWithValue }) => {
-    try {
-      return await getRepositoryDetails(owner, repo)
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error!.response!.data.message)
-      } else {
-        return rejectWithValue("An unknown error occurred")
-      }
-    }
-  }
-)
 
 // Slice
 const repoSlice = createSlice({
@@ -84,18 +78,6 @@ const repoSlice = createSlice({
         state.totalCount = action.payload.total_count
       })
       .addCase(fetchRepositories.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.payload as string
-      })
-      .addCase(fetchRepositoryDetails.pending, (state) => {
-        state.loading = true
-        state.error = null
-      })
-      .addCase(fetchRepositoryDetails.fulfilled, (state, action) => {
-        state.loading = false
-        state.details = action.payload
-      })
-      .addCase(fetchRepositoryDetails.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload as string
       })

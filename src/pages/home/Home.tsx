@@ -6,25 +6,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store/store'
 import { fetchRepositories } from '../../features/repoSlice'
 import ResultTable from '../../components/result-table/ResultTable'
+import RepositoryDetails from '../../components/repository-details/RepositoryDetails'
 
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRepo, setSelectedRepo] = useState<any>(null)
   const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
+  const [sort, setSort] = React.useState('')
   const dispatch = useDispatch<AppDispatch>()
   const { repos, loading, error } = useSelector((state: RootState) => state.repos)
 
   useEffect(() => {
     if (searchQuery) {
-      dispatch(fetchRepositories({ query: searchQuery, page }))
+      dispatch(fetchRepositories({ query: searchQuery, page, rowsPerPage, sort }))
     }
-  }, [dispatch, page])
+    console.log(sort)
+  }, [dispatch, page, rowsPerPage, sort])
 
   const handleSearch = () => {
-    dispatch(fetchRepositories({ query: searchQuery, page }))
+    setPage(0)
+    dispatch(fetchRepositories({ query: searchQuery, page, rowsPerPage, sort }))
   }
-
 
   return (
     <Container disableGutters maxWidth={ false } className={ s.homePageContainer }>
@@ -42,21 +46,20 @@ const Home = () => {
                 page={ page }
                 setPage={ setPage }
                 loading={ loading }
+                rowsPerPage={ rowsPerPage }
+                setRowsPerPage={ setRowsPerPage }
+                setSelectedRepo={ setSelectedRepo }
+                setSort={ setSort }
               />
             </Box>
             <Box className={ s.detailsContainer }>
               { selectedRepo
-                ? (
-                  <Box>
-                    <Typography variant="h6">
-                      Детали репозитория
-                    </Typography>
-                    // TODO: Добавить отображение деталей выбранного репозитория
-                  </Box>
+                ? <RepositoryDetails repo={ selectedRepo }/>
+                : (
+                  <Typography className={ s.detailsHint }>
+                    Выберите репозиторий
+                  </Typography>
                 )
-                : <Typography className={ s.detailsHint }>
-                  Выберите репозиторий
-                </Typography>
               }
             </Box>
           </Box>

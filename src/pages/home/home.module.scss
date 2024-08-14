@@ -37,15 +37,16 @@
     }
 
     .detailsContainer {
-      display: flex;
       flex: 1;
-      align-items: center;
-      justify-content: center;
+      display: flex;
+      width: 100%;
       background: rgba(242, 242, 242, 1);
 
       .detailsHint {
+        width: 100%;
         font-weight: 400;
         font-size: 14px;
+        display: flex;
         align-items: center;
         justify-content: center;
       }

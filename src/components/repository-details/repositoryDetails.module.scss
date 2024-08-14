@@ -1,0 +1,48 @@
+.repDetails {
+  padding: 24px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.87);
+
+  .name {
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+
+    .lang {
+      align-items: center;
+    }
+
+    .stars {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 400;
+      font-size: 14px;
+
+      .starsCount {
+        padding-top: 4px;
+      }
+    }
+  }
+
+  .topics {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .description,
+  .license {
+    font-size: 14px;
+    letter-spacing: 0.17px;
+    margin-top: 24px;
+  }
+}

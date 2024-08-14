@@ -1,27 +1,18 @@
-import axios from 'axios'
+import { Octokit } from 'octokit'
 
-const GITHUB_API_URL = 'https://api.github.com'
 
+const octokit = new Octokit({
+  auth: process.env.REACT_APP_GITHUB_TOKEN
+})
 
 // Функция для поиска репозиториев
-export const searchRepositories = async (query: string, page: number = 1, perPage: number = 10) => {
-  const response = await axios.get(`${GITHUB_API_URL}/search/repositories`, {
-    params: {
-      q: query,
-      sort: 'stars',
-      order: 'desc',
-      page: page,
-      per_page: perPage,
-    },
-    headers: {
-      Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
-    }
+export const searchRepositories = async (query: string, page: number = 1, perPage: number = 10, sort: string = 'stars') => {
+  const response = await octokit.request(`GET /search/repositories`, {
+    q: query,
+    sort: sort,
+    order: 'desc',
+    page: page,
+    per_page: perPage
   })
-  return response.data
-}
-
-// Функция для получения деталей репозитория
-export const getRepositoryDetails = async (owner: string, repo: string) => {
-  const response = await axios.get(`${GITHUB_API_URL}/repos/${owner}/${repo}`)
   return response.data
 }

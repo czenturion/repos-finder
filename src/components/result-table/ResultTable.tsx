@@ -26,6 +26,7 @@ interface Column {
   format?: (value: number) => string
 }
 
+
 const columns: readonly Column[] = [
   {
     id: 'name',
@@ -64,15 +65,27 @@ type ResultTablePropsT = {
   repos: Repository[]
   loading: boolean
   page: number
+  rowsPerPage: number
   setPage: (p: number) => void
+  setRowsPerPage: (p: number) => void
+  setSelectedRepo: (r: Repository) => void
+  setSort: (s: string) => void
 }
 
-const ResultTable: React.FC<ResultTablePropsT> = ({ repos, loading, page, setPage }) => {
+const ResultTable: React.FC<ResultTablePropsT> = ({
+                                                    repos,
+                                                    loading,
+                                                    page,
+                                                    setPage,
+                                                    rowsPerPage,
+                                                    setRowsPerPage,
+                                                    setSelectedRepo,
+                                                    setSort
+                                                  }) => {
   const totalCount = useSelector((state: RootState) => state.repos.totalCount)
-  const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
-
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    console.log(newPage)
     setPage(newPage)
   }
 
@@ -88,12 +101,17 @@ const ResultTable: React.FC<ResultTablePropsT> = ({ repos, loading, page, setPag
           ? <Loader/>
           : <Box>
             <TableContainer className={ s.table }>
-              <Table sx={{flex: '1'}}>
+              <Table sx={ { paddingBottom: '52px' } }>
                 <TableHead>
                   <TableRow>
-                    { columns.map((column, index) => (
-                      <TableCell key={ index }>
-                        <TableSortLabel classes={ s.headTitle }>
+                    { columns.map((column) => (
+                      <TableCell
+                        key={ column.id }
+                      >
+                        <TableSortLabel
+                          className={ s.headTitle }
+                          onClick={ () => setSort(column.label) }
+                        >
                           { column.label }
                         </TableSortLabel>
                       </TableCell>
@@ -102,7 +120,7 @@ const ResultTable: React.FC<ResultTablePropsT> = ({ repos, loading, page, setPag
                 </TableHead>
                 <TableBody>
                   { repos.map((repo) => (
-                    <TableRow>
+                    <TableRow key={ repo.id } onClick={ () => setSelectedRepo(repo) }>
                       <TableCell>{ repo.name }</TableCell>
                       <TableCell>{ repo.language }</TableCell>
                       <TableCell>{ repo.forks }</TableCell>
@@ -113,7 +131,7 @@ const ResultTable: React.FC<ResultTablePropsT> = ({ repos, loading, page, setPag
                 </TableBody>
               </Table>
               <TablePagination
-                sx={{flex: '0'}}
+                sx={ { position: 'fixed', bottom: '0', right: '33%', background: 'white', width: '100%' } }
                 page={ page }
                 component="div"
                 rowsPerPageOptions={ [5, 10, 25] }
