@@ -32,7 +32,12 @@ interface RepoState {
   error: string | null
 }
 
-type fetchRepositoriesPropsT = { query: string, page: number, rowsPerPage: number, sort: string }
+type fetchRepositoriesPropsT = {
+  query: string
+  page: number
+  rowsPerPage: number
+  sort: string
+}
 
 // Начальное состояние
 const initialState: RepoState = {

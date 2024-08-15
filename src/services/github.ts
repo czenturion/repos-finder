@@ -6,7 +6,7 @@ const octokit = new Octokit({
 })
 
 // Функция для поиска репозиториев
-export const searchRepositories = async (query: string, page: number = 1, perPage: number = 10, sort: string = 'stars') => {
+export const searchRepositories = async (query: string, page: number = 1, perPage: number = 10, sort: string = 'stargazers_count') => {
   const response = await octokit.request(`GET /search/repositories`, {
     q: query,
     sort: sort,

@@ -6,8 +6,21 @@
   padding-bottom: 52px;
 
   .headTitle {
+    flex-direction: row-reverse;
     font-weight: 700;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.87);
+  }
+
+  .repo {
+
+  }
+
+  .paginator {
+    position: fixed;
+    bottom: 0;
+    right: 33%;
+    background: white;
+    width: 100%;
   }
 }

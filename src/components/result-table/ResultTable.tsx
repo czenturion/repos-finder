@@ -3,7 +3,7 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer, TableFooter,
+  TableContainer,
   TableHead,
   TablePagination,
   TableRow,
@@ -91,7 +91,6 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
   }
 
   return (
@@ -110,7 +109,7 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
                       >
                         <TableSortLabel
                           className={ s.headTitle }
-                          onClick={ () => setSort(column.label) }
+                          onClick={ () => setSort(column.id) }
                         >
                           { column.label }
                         </TableSortLabel>
@@ -120,7 +119,7 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
                 </TableHead>
                 <TableBody>
                   { repos.map((repo) => (
-                    <TableRow key={ repo.id } onClick={ () => setSelectedRepo(repo) }>
+                    <TableRow className={s.repo} key={ repo.id } onClick={ () => setSelectedRepo(repo) }>
                       <TableCell>{ repo.name }</TableCell>
                       <TableCell>{ repo.language }</TableCell>
                       <TableCell>{ repo.forks }</TableCell>
@@ -131,7 +130,7 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
                 </TableBody>
               </Table>
               <TablePagination
-                sx={ { position: 'fixed', bottom: '0', right: '33%', background: 'white', width: '100%' } }
+                className={s.paginator}
                 page={ page }
                 component="div"
                 rowsPerPageOptions={ [5, 10, 25] }

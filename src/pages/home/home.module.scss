@@ -18,13 +18,13 @@
     display: flex;
     flex: 1 1 auto;
     justify-content: space-between;
-    padding-left: 42px;
     height: 100%;
+    padding-left: 42px;
 
 
     .tableContainer {
-      height: 100%;
       flex: 2;
+      height: 100%;
       margin-right: 16px;
 
       .resultTitle {
