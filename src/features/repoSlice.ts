@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { searchRepositories } from '../services/github'
+import { searchRepositories } from '@/services/github'
 
 // Типы данных
 export interface Repository {
@@ -18,22 +18,24 @@ type License = {
   name: string
 }
 
-interface RepositoryDetails {
+export interface RepositoryDetails {
   name: string
+  language: string
   description: string
   license: { name: string }
+  stargazers_count: string
+  topics: string[]
 }
 
 interface RepoState {
   repos: Repository[]
   totalCount: number
-  details: RepositoryDetails | null
   loading: boolean
   error: string | null
 }
 
 type fetchRepositoriesPropsT = {
-  query: string
+  searchQuery: string
   page: number
   rowsPerPage: number
   sort: string
@@ -43,7 +45,6 @@ type fetchRepositoriesPropsT = {
 const initialState: RepoState = {
   repos: [],
   totalCount: 0,
-  details: null,
   loading: false,
   error: null
 }
@@ -51,9 +52,9 @@ const initialState: RepoState = {
 // Асинхронные операции
 export const fetchRepositories = createAsyncThunk(
   'repos/fetchRepositories',
-  async ({ query, page, rowsPerPage, sort }: fetchRepositoriesPropsT, { rejectWithValue }) => {
+  async ({ searchQuery, page, rowsPerPage, sort }: fetchRepositoriesPropsT, { rejectWithValue }) => {
     try {
-      const data = await searchRepositories(query, page, rowsPerPage, sort)
+      const data = await searchRepositories(searchQuery, page, rowsPerPage, sort)
       return data
     } catch (error: any) {
       if (error.status) {

@@ -10,87 +10,28 @@ import {
   TableSortLabel
 } from '@mui/material'
 import React from 'react'
-import { Repository } from '../../features/repoSlice'
 import s from './resultTable.module.scss'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store/store'
-import Loader from '../loader/Loader'
-
-interface Column {
-  id: 'name' | 'language' | 'forks' | 'stars' | 'updated'
-  label: string
-  minWidth?: number
-  sortable?: boolean
-  type?: 'number'
-  align?: 'right'
-  format?: (value: number) => string
-}
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootStateT } from '@/store/store'
+import Loader from '@components/loader/Loader'
+import { setPage, setSelectedRepo, setRowsPerPage, setSort } from '@/features/searchSlice'
+import { ResultTablePropsT } from '@/types/componetTypes'
+import { columns } from '@/store/consts'
 
 
-const columns: readonly Column[] = [
-  {
-    id: 'name',
-    label: 'Название',
-    sortable: true
-  },
-  {
-    id: 'language',
-    label: 'Язык',
-    sortable: true
-  },
-  {
-    id: 'forks',
-    label: 'Число форков',
-    type: 'number',
-    sortable: true,
-    format: (value: number) => value.toLocaleString('en-US')
-  },
-  {
-    id: 'stars',
-    label: 'Число звезд',
-    sortable: true,
-    align: 'right',
-    format: (value: number) => value.toLocaleString('en-US')
-  },
-  {
-    id: 'updated',
-    label: 'Дата обновления',
-    sortable: true,
-    align: 'right',
-    format: (value: number) => value.toFixed(2)
-  }
-];
+const ResultTable: React.FC<ResultTablePropsT> = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { repos, loading, totalCount } = useSelector((state: RootStateT) => state.repos)
+  const { page, rowsPerPage } = useSelector((state: RootStateT) => state.search)
 
-type ResultTablePropsT = {
-  repos: Repository[]
-  loading: boolean
-  page: number
-  rowsPerPage: number
-  setPage: (p: number) => void
-  setRowsPerPage: (p: number) => void
-  setSelectedRepo: (r: Repository) => void
-  setSort: (s: string) => void
-}
-
-const ResultTable: React.FC<ResultTablePropsT> = ({
-                                                    repos,
-                                                    loading,
-                                                    page,
-                                                    setPage,
-                                                    rowsPerPage,
-                                                    setRowsPerPage,
-                                                    setSelectedRepo,
-                                                    setSort
-                                                  }) => {
-  const totalCount = useSelector((state: RootState) => state.repos.totalCount)
-
+  // Функция для TablePagination, для изменения текущей страницы
   const handleChangePage = (_event: unknown, newPage: number) => {
-    console.log(newPage)
-    setPage(newPage)
+    dispatch(setPage(newPage))
   }
 
+  // Функция для TablePagination, для изменения кол-ва записей на странице
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
+    dispatch(setRowsPerPage(parseInt(event.target.value)))
   }
 
   return (
@@ -100,16 +41,17 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
           ? <Loader/>
           : <Box>
             <TableContainer className={ s.table }>
-              <Table sx={ { paddingBottom: '52px' } }>
+              <Table>
                 <TableHead>
-                  <TableRow>
+                  <TableRow className={ s.tableHead }>
                     { columns.map((column) => (
                       <TableCell
                         key={ column.id }
+                        className={ s.column }
                       >
                         <TableSortLabel
                           className={ s.headTitle }
-                          onClick={ () => setSort(column.id) }
+                          onClick={ () => dispatch(setSort(column.id)) }
                         >
                           { column.label }
                         </TableSortLabel>
@@ -119,18 +61,18 @@ const ResultTable: React.FC<ResultTablePropsT> = ({
                 </TableHead>
                 <TableBody>
                   { repos.map((repo) => (
-                    <TableRow className={s.repo} key={ repo.id } onClick={ () => setSelectedRepo(repo) }>
-                      <TableCell>{ repo.name }</TableCell>
+                    <TableRow className={ s.repo } key={ repo.id } onClick={ () => dispatch(setSelectedRepo(repo)) }>
+                      <TableCell className={ s.repoName }>{ repo.name }</TableCell>
                       <TableCell>{ repo.language }</TableCell>
                       <TableCell>{ repo.forks }</TableCell>
                       <TableCell>{ repo.stargazers_count }</TableCell>
-                      <TableCell>{ repo.updated_at.slice(0, 10) }</TableCell>
+                      <TableCell>{ repo.updated_at.slice(0, 10).split('-').reverse().join('-') }</TableCell>
                     </TableRow>
                   )) }
                 </TableBody>
               </Table>
               <TablePagination
-                className={s.paginator}
+                className={ s.paginator }
                 page={ page }
                 component="div"
                 rowsPerPageOptions={ [5, 10, 25] }

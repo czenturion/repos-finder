@@ -5,15 +5,39 @@
   height: 100%;
   padding-bottom: 52px;
 
-  .headTitle {
-    flex-direction: row-reverse;
-    font-weight: 700;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.87);
+  .tableHead {
+    .column {
+      padding: 16px 0;
+
+      &:first-child {
+        padding-left: 16px;
+      }
+
+      .headTitle {
+        flex-direction: row-reverse;
+        align-items: center;
+        padding: 0;
+        font-weight: 700;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.87);
+
+        .MuiTableSortLabel-icon,
+        .MuiTableSortLabel-root,
+        svg {
+          margin: 0;
+        }
+      }
+    }
   }
 
   .repo {
 
+    td {
+      padding-left: 18px;
+    }
+    .repoName {
+      max-width: 200px;
+    }
   }
 
   .paginator {
